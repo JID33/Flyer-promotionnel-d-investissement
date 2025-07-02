@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dream2Build1 - Authentication & Payment</title>
+    <style>
+        /* ... (Keep all your existing CSS here) ... */
+    </style>
+</head>
+<body>
+
+<!-- ... (Keep your existing sign up, login, payment, etc. panels here) ... -->
+
+<div id="leaderPanel" class="panel hidden">
+    <h2>🧑‍🤝‍🧑 Team Leader Dashboard</h2>
+    <p>Welcome, <span id="leaderNameDisplay"></span>!</p>
+    <div class="logout-btn">
+        <button onclick="logoutLeader()">Logout</button>
+    </div>
+
+    <hr>
+    <h3>💸 Pending Payments:</h3>
+    <ul id="pendingPaymentsList">
+        <!-- Pending payments will be dynamically populated here -->
+    </ul>
+    <p id="noPendingPayments" style="font-style: italic;">No pending payments.</p>
+
+    <!-- ... (Keep your user messages and rotation management sections) ... -->
+</div>
+
+<!-- ... (Other panels as in your original HTML) ... -->
+
+<script>
+/* --- DEMO DATA STRUCTURES --- */
+let users = [
+    // Example user:
+    // { email: "test@example.com", fullName: "Test User", paid: false, paymentPending: true, platformAccess: false }
+];
+let pendingPayments = []; // Array of {email, fullName}
+
+function showPendingPayments() {
+    const list = document.getElementById('pendingPaymentsList');
+    list.innerHTML = '';
+    if (pendingPayments.length === 0) {
+        document.getElementById('noPendingPayments').style.display = '';
+        return;
+    }
+    document.getElementById('noPendingPayments').style.display = 'none';
+    pendingPayments.forEach((payment, idx) => {
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <span><b>${payment.fullName}</b> (${payment.email})</span>
+            <button onclick="validatePayment('${payment.email}', ${idx})">Validate</button>
+        `;
+        list.appendChild(li);
+    });
+}
+
+// Called when leader clicks "Validate"
+function validatePayment(email, idx) {
+    // Find user in the users array
+    const user = users.find(u => u.email === email);
+    if (!user) {
+        alert('Error: Email not found. Payment cannot be validated.');
+        return;
+    }
+    // Validate payment
+    user.paid = true;
+    user.paymentPending = false;
+    user.platformAccess = true; // Grant access to full platform
+    // Remove from pendingPayments
+    pendingPayments.splice(idx, 1);
+    // Optionally, add user to rotation participants here
+    // updateRotationParticipants(user);
+    // Update UI
+    showPendingPayments();
+    alert('Payment validated. User now has access to the full platform and is added to the rotation.');
+}
+
+// Example: When a new user submits payment info
+function onUserPaymentSubmitted(email, fullName) {
+    // Add to pending payments for leader to validate
+    pendingPayments.push({email, fullName});
+    // Mark user as payment pending
+    let user = users.find(u => u.email === email);
+    if (!user) {
+        user = {email, fullName, paid: false, paymentPending: true, platformAccess: false};
+        users.push(user);
+    } else {
+        user.paymentPending = true;
+    }
+    // Notify user payment is pending validation
+    alert('Your payment is pending validation by the leader. You will get access after validation.');
+}
+
+/* --- Call showPendingPayments() when leader panel is shown --- */
+// For demo, call it here:
+showPendingPayments();
+
+</script>
+</body>
+</html>

@@ -59,7 +59,7 @@ const groupMembersList = document.getElementById('groupMembersList');
 // List of common emojis for the picker
 const emojis = [
     '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
-    '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
+    '🙂', '🙃', '😉', '😌', '😍', '🥰', '�', '😗', '😙', '😚',
     '😋', '😛', '😜', '🤪', '😝', '🤗', '🤭', '🤫', '🤔', '🤨',
     '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔',
     '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵',
@@ -181,13 +181,21 @@ saveDisplayNameBtn.addEventListener('click', async () => {
 // Initialize Firebase and setup listeners when the window loads
 window.onload = async () => {
     try {
+        // --- DÉBOGAGE DES VARIABLES D'ENVIRONNEMENT ---
+        console.log("Raw __firebase_config:", typeof __firebase_config !== 'undefined' ? __firebase_config : "undefined ou non disponible");
+        console.log("Raw __app_id:", typeof __app_id !== 'undefined' ? __app_id : "undefined ou non disponible");
+        console.log("Raw __initial_auth_token:", typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : "undefined ou non disponible");
+        // --- FIN DU DÉBOGAGE ---
+
         // Mandatory Firebase configuration and app ID
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' && __firebase_config !== '' ? __firebase_config : '{}');
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
+        console.log("Parsed firebaseConfig:", firebaseConfig); // Log the parsed config
+
         if (Object.keys(firebaseConfig).length === 0) {
-            displayError("Configuration Firebase manquante. Veuillez vérifier la variable __firebase_config.");
+            displayError("Configuration Firebase manquante ou invalide. Assurez-vous que __firebase_config est correctement défini par l'environnement.");
             loadingOverlay.style.display = 'none';
             return;
         }
@@ -240,7 +248,8 @@ window.onload = async () => {
         });
 
     } catch (error) {
-        displayError(`Échec de l'initialisation de Firebase ou de l'authentification: ${error.message}`);
+        // Capture and display any errors during the initial setup
+        displayError(`Échec de l'initialisation de Firebase ou de l'authentification: ${error.message}. Vérifiez votre configuration Firebase.`);
         loadingOverlay.style.display = 'none';
     }
 };
@@ -728,3 +737,4 @@ messageInput.addEventListener('keypress', (e) => {
         sendMessage();
     }
 });
+�

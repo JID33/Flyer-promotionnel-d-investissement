@@ -1,106 +1,540 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dream2Build1 - Authentication & Payment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Système de Messagerie Avancé</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
     <style>
-        /* ... (Keep all your existing CSS here) ... */
+        /* Styles CSS intégrés pour la mise en page et les composants */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .chat-container {
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px; /* Increased max-width */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            height: 90vh; /* Adjusted height */
+        }
+        .header-area {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+        }
+        .user-id-display {
+            font-size: 0.8rem;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .chat-mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        }
+        .chat-mode-button {
+            background-color: #e2e8f0;
+            color: #4a5568;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .chat-mode-button.active {
+            background-color: #007bff;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.2);
+        }
+        .chat-mode-button:hover:not(.active) {
+            background-color: #cbd5e0;
+        }
+        .recipient-input-area {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            justify-content: center;
+            align-items: center;
+        }
+        .recipient-input-area input {
+            flex-grow: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .current-chat-display {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-top: 10px;
+        }
+        .messages-area {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background-color: #e9ebee;
+            border-bottom: 1px solid #ddd;
+        }
+        .message-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .message-bubble.sent {
+            background-color: #007bff;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        .message-bubble.received {
+            background-color: #f0f0f0;
+            color: #333;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        .message-info {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 2px;
+            text-align: right;
+        }
+        .message-bubble.received .message-info {
+            text-align: left;
+        }
+        .message-content img, .message-content video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        .message-content a {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .typing-indicator {
+            font-size: 0.85rem;
+            color: #777;
+            padding: 5px 20px;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 5px;
+            align-self: flex-start;
+            animation: fadeIn 0.3s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: #fff;
+            align-items: center; /* Align items vertically */
+            position: relative; /* For emoji picker positioning */
+        }
+        .input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .input-area input[type="text"]:focus {
+            border-color: #007bff;
+        }
+        .input-area button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin-left: 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s, transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+            flex-shrink: 0; /* Prevent button from shrinking */
+        }
+        .input-area button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .input-area button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(0, 123, 255, 0.2);
+        }
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        .file-input-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .file-input-button {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3);
+        }
+        .file-input-button:hover {
+            background-color: #5a6268;
+        }
+        .file-name-display {
+            font-size: 0.8rem;
+            color: #555;
+            margin-left: 10px;
+            flex-shrink: 0;
+            max-width: 150px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .emoji-picker {
+            position: absolute;
+            bottom: 70px; /* Above the input area */
+            left: 15px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr); /* Adjust as needed */
+            gap: 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10;
+            display: none; /* Hidden by default */
+        }
+        .emoji-picker button {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+        .emoji-picker button:hover {
+            background-color: #eee;
+        }
+        .emoji-button {
+            background-color: #fff;
+            color: #333;
+            border: 1px solid #ddd;
+            padding: 10px 15px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        .emoji-button:hover {
+            background-color: #f0f0f0;
+        }
+
+        .loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            border-radius: 15px;
+        }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .error-message {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            display: none; /* Hidden by default */
+        }
+
+        /* Profile Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+        .modal-content {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+        .modal-content h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .modal-content input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+        .modal-content button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+        }
+        .modal-content button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Group Management Section */
+        .group-management-area {
+            padding: 15px 20px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            align-items: center;
+            display: none; /* Hidden by default, shown when group chat is active */
+        }
+        .group-management-area input {
+            flex-grow: 1;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+            font-size: 0.9rem;
+            width: 100%;
+            max-width: 300px;
+        }
+        .group-management-area button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s;
+        }
+        .group-management-area button:hover {
+            background-color: #218838;
+        }
+        .group-members-list {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 5px;
+            max-height: 80px;
+            overflow-y: auto;
+            text-align: left;
+            width: 100%;
+            max-width: 300px;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .chat-container {
+                height: 95vh;
+                border-radius: 0;
+                box-shadow: none;
+                max-width: 100%;
+            }
+            body {
+                padding: 0;
+            }
+            .header-area {
+                border-top-left-radius: 0;
+                border-top-right-radius: 0;
+            }
+            .chat-mode-selector {
+                flex-direction: column;
+            }
+            .input-area {
+                flex-wrap: wrap; /* Allow input area to wrap */
+                justify-content: center;
+            }
+            .input-area input[type="text"] {
+                width: 100%;
+                order: 3; /* Move text input below file/emoji buttons */
+                margin-bottom: 10px;
+            }
+            .file-input-wrapper, .emoji-button {
+                width: calc(50% - 15px); /* Distribute space */
+                margin: 0 5px 10px;
+                order: 1;
+            }
+            .file-name-display {
+                width: 100%;
+                text-align: center;
+                margin-top: 5px;
+                order: 2;
+            }
+            .input-area button#sendMessageBtn {
+                width: 100%;
+                margin-left: 0;
+                order: 4;
+            }
+            .emoji-picker {
+                bottom: 130px; /* Adjust position for smaller screens */
+                left: 50%;
+                transform: translateX(-50%);
+                width: 90%;
+            }
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="chat-container">
+        <div class="loading-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+        </div>
 
-<!-- ... (Keep your existing sign up, login, payment, etc. panels here) ... -->
+        <!-- Profile Setup Modal -->
+        <div id="profileModal" class="modal-overlay hidden">
+            <div class="modal-content">
+                <h2>Bienvenue ! Définissez votre nom d'affichage</h2>
+                <p class="text-sm text-gray-600 mb-4">Votre ID d'utilisateur unique est : <span id="modalUserIdDisplay" class="font-bold"></span></p>
+                <input type="text" id="displayNameInput" placeholder="Votre nom d'affichage (ex: Jean, Admin)">
+                <button id="saveDisplayNameBtn">Enregistrer le nom</button>
+            </div>
+        </div>
 
-<div id="leaderPanel" class="panel hidden">
-    <h2>🧑‍🤝‍🧑 Team Leader Dashboard</h2>
-    <p>Welcome, <span id="leaderNameDisplay"></span>!</p>
-    <div class="logout-btn">
-        <button onclick="logoutLeader()">Logout</button>
+        <div class="header-area">
+            <div class="user-id-display">
+                Votre ID d'utilisateur: <span id="currentUserId">Chargement...</span> (<span id="myDisplayName"></span>)
+            </div>
+            <div class="chat-mode-selector">
+                <button id="publicChatBtn" class="chat-mode-button active">Chat Public</button>
+                <button id="privateChatBtn" class="chat-mode-button">Chat Privé</button>
+                <button id="groupChatBtn" class="chat-mode-button">Chat de Groupe</button>
+            </div>
+            <div class="recipient-input-area hidden" id="privateRecipientInput">
+                <input type="text" id="privateRecipientId" placeholder="ID du destinataire privé...">
+            </div>
+            <div class="recipient-input-area hidden" id="groupNameInput">
+                <input type="text" id="groupChatId" placeholder="ID du groupe (ex: mon-groupe-1)...">
+            </div>
+            <div class="current-chat-display" id="currentChatDisplay">
+                Chat Actuel: Public
+            </div>
+        </div>
+
+        <!-- Group Management Section -->
+        <div class="group-management-area" id="groupManagementArea">
+            <div class="text-sm font-semibold text-gray-700">Gérer les membres du groupe:</div>
+            <input type="text" id="addMemberInput" placeholder="UID de l'utilisateur à ajouter...">
+            <button id="addMemberBtn">Ajouter au groupe</button>
+            <div class="group-members-list" id="groupMembersList">
+                Membres: Aucun
+            </div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+        <div class="messages-area" id="messagesArea">
+            <!-- Les messages seront ajoutés ici par JavaScript -->
+        </div>
+        <div class="typing-indicator-area" id="typingIndicatorArea">
+            <!-- Les indicateurs de saisie seront ajoutés ici -->
+        </div>
+        <div class="input-area">
+            <div class="file-input-wrapper">
+                <button class="file-input-button">Joindre un fichier</button>
+                <input type="file" id="fileInput">
+            </div>
+            <button id="emojiButton" class="emoji-button">😀</button>
+            <span id="fileNameDisplay" class="file-name-display"></span>
+            <input type="text" id="messageInput" placeholder="Tapez votre message..." class="flex-grow p-3 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <button id="sendMessageBtn" class="bg-blue-500 text-white px-6 py-3 rounded-full hover:bg-blue-600 transition duration-300 ease-in-out shadow-lg">Envoyer</button>
+
+            <div id="emojiPicker" class="emoji-picker"></div>
+        </div>
     </div>
 
-    <hr>
-    <h3>💸 Pending Payments:</h3>
-    <ul id="pendingPaymentsList">
-        <!-- Pending payments will be dynamically populated here -->
-    </ul>
-    <p id="noPendingPayments" style="font-style: italic;">No pending payments.</p>
-
-    <!-- ... (Keep your user messages and rotation management sections) ... -->
-</div>
-
-<!-- ... (Other panels as in your original HTML) ... -->
-// Add these arrays if not already present
-let users = []; // Array of user objects
-let pendingPayments = []; // Array of {email, fullName}
-
-<script>
-/* --- DEMO DATA STRUCTURES --- */
-let users = [
-    // Example user:
-    // { email: "test@example.com", fullName: "Test User", paid: false, paymentPending: true, platformAccess: false }
-];
-let pendingPayments = []; // Array of {email, fullName}
-
-function showPendingPayments() {
-    const list = document.getElementById('pendingPaymentsList');
-    list.innerHTML = '';
-    if (pendingPayments.length === 0) {
-        document.getElementById('noPendingPayments').style.display = '';
-        return;
-    }
-    document.getElementById('noPendingPayments').style.display = 'none';
-    pendingPayments.forEach((payment, idx) => {
-        const li = document.createElement('li');
-        li.innerHTML = `
-            <span><b>${payment.fullName}</b> (${payment.email})</span>
-            <button onclick="validatePayment('${payment.email}', ${idx})">Validate</button>
-        `;
-        list.appendChild(li);
-    });
-}
-
-// Called when leader clicks "Validate"
-function validatePayment(email, idx) {
-    // Find user in the users array
-    const user = users.find(u => u.email === email);
-    if (!user) {
-        alert('Error: Email not found. Payment cannot be validated.');
-        return;
-    }
-    // Validate payment
-    user.paid = true;
-    user.paymentPending = false;
-    user.platformAccess = true; // Grant access to full platform
-    // Remove from pendingPayments
-    pendingPayments.splice(idx, 1);
-    // Optionally, add user to rotation participants here
-    // updateRotationParticipants(user);
-    // Update UI
-    showPendingPayments();
-    alert('Payment validated. User now has access to the full platform and is added to the rotation.');
-}
-
-// Example: When a new user submits payment info
-function onUserPaymentSubmitted(email, fullName) {
-    // Add to pending payments for leader to validate
-    pendingPayments.push({email, fullName});
-    // Mark user as payment pending
-    let user = users.find(u => u.email === email);
-    if (!user) {
-        user = {email, fullName, paid: false, paymentPending: true, platformAccess: false};
-        users.push(user);
-    } else {
-        user.paymentPending = true;
-    }
-    // Notify user payment is pending validation
-    alert('Your payment is pending validation by the leader. You will get access after validation.');
-}
-
-/* --- Call showPendingPayments() when leader panel is shown --- */
-// For demo, call it here:
-showPendingPayments();
-
-</script>
+    <!-- Lien vers le fichier JavaScript refactorisé -->
+    <script type="module" src="script.js"></script>
 </body>
 </html>

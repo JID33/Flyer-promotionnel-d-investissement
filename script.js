@@ -59,7 +59,7 @@ const groupMembersList = document.getElementById('groupMembersList');
 // List of common emojis for the picker
 const emojis = [
     '😀', '😃', '😄', '😁', '😆', '😅', '😂', '🤣', '😊', '😇',
-    '🙂', '🙃', '😉', '😌', '😍', '🥰', '�', '😗', '😙', '😚',
+    '🙂', '🙃', '😉', '😌', '😍', '🥰', '😘', '😗', '😙', '😚',
     '😋', '😛', '😜', '🤪', '😝', '🤗', '🤭', '🤫', '🤔', '🤨',
     '😐', '😑', '😶', '😏', '😒', '🙄', '😬', '🤥', '😌', '😔',
     '😪', '🤤', '😴', '😷', '🤒', '🤕', '🤢', '🤮', '🤧', '🥵',
@@ -112,6 +112,7 @@ async function getDisplayName(uid) {
     if (userDisplayNames[uid]) {
         return userDisplayNames[uid];
     }
+    // Return a temporary display name if db is not initialized yet
     if (!db) return `Utilisateur ${uid.substring(0, 6)}...`;
 
     try {
@@ -187,15 +188,25 @@ window.onload = async () => {
         console.log("Raw __initial_auth_token:", typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : "undefined ou non disponible");
         // --- FIN DU DÉBOGAGE ---
 
-        // Mandatory Firebase configuration and app ID
-        const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' && __firebase_config !== '' ? __firebase_config : '{}');
+        let firebaseConfig = {};
+        try {
+            // Attempt to parse firebaseConfig, handle potential JSON errors
+            if (typeof __firebase_config !== 'undefined' && __firebase_config !== '') {
+                firebaseConfig = JSON.parse(__firebase_config);
+            }
+        } catch (e) {
+            displayError(`Erreur de parsing de la configuration Firebase: ${e.message}. Assurez-vous que __firebase_config est un JSON valide.`);
+            loadingOverlay.style.display = 'none';
+            return;
+        }
+
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
 
         console.log("Parsed firebaseConfig:", firebaseConfig); // Log the parsed config
 
-        if (Object.keys(firebaseConfig).length === 0) {
-            displayError("Configuration Firebase manquante ou invalide. Assurez-vous que __firebase_config est correctement défini par l'environnement.");
+        if (Object.keys(firebaseConfig).length === 0 || !firebaseConfig.apiKey || !firebaseConfig.projectId) {
+            displayError("Configuration Firebase manquante ou invalide. Assurez-vous que __firebase_config est correctement défini par l'environnement et contient les clés nécessaires (apiKey, projectId, etc.).");
             loadingOverlay.style.display = 'none';
             return;
         }
@@ -285,7 +296,9 @@ function switchChat(mode, id = null) {
         privateRecipientInputDiv.classList.add('hidden');
         groupNameInputDiv.classList.add('hidden');
         currentChatDisplay.textContent = 'Chat Actuel: Public';
-        setupMessageListener(getPublicMessagesCollectionRef(), 'public_chat_id');
+        // Ensure Firebase is initialized before setting up listeners
+        if (db) setupMessageListener(getPublicMessagesCollectionRef(), 'public_chat_id');
+        else displayError("Base de données non initialisée pour le chat public.");
     } else if (mode === 'private') {
         privateChatBtn.classList.add('active');
         privateRecipientInputDiv.classList.remove('hidden');
@@ -295,7 +308,8 @@ function switchChat(mode, id = null) {
         if (id) {
             const chatUsers = [currentUserId, id].sort();
             const privateChatId = chatUsers[0] + '_' + chatUsers[1];
-            setupMessageListener(getPrivateMessagesCollectionRef(currentUserId, id), privateChatId);
+            if (db) setupMessageListener(getPrivateMessagesCollectionRef(currentUserId, id), privateChatId);
+            else displayError("Base de données non initialisée pour le chat privé.");
         }
     } else if (mode === 'group') {
         groupChatBtn.classList.add('active');
@@ -305,8 +319,12 @@ function switchChat(mode, id = null) {
         currentChatDisplay.textContent = `Chat Actuel: Groupe ${id ? id : '...'}`;
         // Listener will be set up when group ID is entered
         if (id) {
-            setupMessageListener(getGroupMessagesCollectionRef(id), id);
-            setupGroupMembersListener(id); // Listen for group members
+            if (db) {
+                setupMessageListener(getGroupMessagesCollectionRef(id), id);
+                setupGroupMembersListener(id); // Listen for group members
+            } else {
+                displayError("Base de données non initialisée pour le chat de groupe.");
+            }
         }
     }
 }
@@ -626,6 +644,12 @@ function setupGroupMembersListener(groupId) {
 
 // Function to add a member to the current group
 addMemberBtn.addEventListener('click', async () => {
+    // Check if the group management area is actually visible and active
+    if (groupManagementArea.style.display === 'none' || currentChatMode !== 'group' || !currentChatId) {
+        displayError("Vous devez être dans un chat de groupe pour ajouter des membres.");
+        return;
+    }
+
     const memberUidToAdd = addMemberInput.value.trim();
     if (!memberUidToAdd) {
         displayError("Veuillez entrer l'UID de l'utilisateur à ajouter.");
@@ -633,10 +657,6 @@ addMemberBtn.addEventListener('click', async () => {
     }
     if (memberUidToAdd === currentUserId) {
         displayError("Vous êtes déjà membre de ce groupe.");
-        return;
-    }
-    if (currentChatMode !== 'group' || !currentChatId) {
-        displayError("Vous devez être dans un chat de groupe pour ajouter des membres.");
         return;
     }
     if (!db) {
@@ -737,4 +757,3 @@ messageInput.addEventListener('keypress', (e) => {
         sendMessage();
     }
 });
-�

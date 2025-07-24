@@ -3,77 +3,90 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Connexion</title>
+  <title>Connexion – D2B1</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f3f3f3;
-      padding: 20px;
+      background: #e6f0ff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     form {
-      background-color: #fff;
-      padding: 30px;
-      max-width: 400px;
-      margin: auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      border-radius: 10px;
+      width: 100%;
+      max-width: 400px;
     }
     input, button {
-      display: block;
       width: 100%;
-      padding: 12px;
-      margin-bottom: 15px;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
     }
     button {
-      background-color: #1e88e5;
-      color: #fff;
+      background-color: #3399ff;
+      color: white;
+      font-weight: bold;
       border: none;
       cursor: pointer;
+    }
+    .welcome {
+      display: none;
+      text-align: center;
+      font-size: 1.2rem;
+      color: green;
+      animation: fadeIn 1s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
 
   <form id="loginForm">
-    <h2>Connexion</h2>
-    <input type="email" name="email" placeholder="Email" required />
-    <input type="password" name="password" placeholder="Mot de passe" required />
+    <h2>Connexion Membre</h2>
+    <input type="text" id="username" placeholder="Nom d'utilisateur" required />
+    <input type="password" id="password" placeholder="Mot de passe" required />
     <button type="submit">Se connecter</button>
-    <p id="message" style="color:red;"></p>
+    <p class="welcome" id="welcomeMsg">Bienvenue sur le système rotatif D2B1 !</p>
   </form>
 
   <script>
-    // Stocker la page précédente si elle existe
-    if (document.referrer && !localStorage.getItem("lastPage")) {
-      localStorage.setItem("lastPage", document.referrer);
+    const form = document.getElementById('loginForm');
+    const welcomeMsg = document.getElementById('welcomeMsg');
+
+    // Simuler des identifiants (à remplacer plus tard par Firebase ou base de données)
+    const USERNAME = "admin";
+    const PASSWORD = "1234";  // change-le plus tard
+
+    // Sauvegarder l'URL précédente (si pas déjà fait)
+    if (!sessionStorage.getItem('lastPage')) {
+      sessionStorage.setItem('lastPage', document.referrer || "index.html");
     }
 
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbwsyawODzTpdmYRrLoln2OWtnCiti-ESqahzOiWTN1ZclXumdKmARmYMvc7tzNum5gAmA/exec';
-
-    document.getElementById("loginForm").addEventListener("submit", function(e) {
+    form.addEventListener('submit', function(e) {
       e.preventDefault();
+      const user = document.getElementById('username').value;
+      const pass = document.getElementById('password').value;
 
-      const formData = new FormData(this);
-      const email = formData.get("email");
-      const password = formData.get("password");
+      if (user === USERNAME && pass === PASSWORD) {
+        welcomeMsg.style.display = 'block';
 
-      fetch(scriptURL)
-        .then(res => res.json())
-        .then(data => {
-          const user = data.find(u => u.email === email && u.password === password);
-          if (user) {
-            // Redirection vers la page précédente
-            const lastPage = localStorage.getItem("lastPage") || "index.html";
-            localStorage.removeItem("lastPage");
-            window.location.href = lastPage;
-          } else {
-            document.getElementById("message").textContent = "Identifiants incorrects.";
-          }
-        })
-        .catch(err => {
-          console.error("Erreur : ", err);
-          document.getElementById("message").textContent = "Erreur lors de la connexion.";
-        });
+        // Attendre un peu pour l'animation puis rediriger
+        setTimeout(() => {
+          const lastPage = sessionStorage.getItem('lastPage') || "index.html";
+          window.location.href = lastPage;
+        }, 2000); // 2 secondes pour l'effet "bienvenue"
+      } else {
+        alert("Identifiants incorrects !");
+      }
     });
   </script>
 

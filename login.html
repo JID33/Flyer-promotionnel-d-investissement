@@ -3,88 +3,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Connexion – D2B1</title>
+  <title>Connexion</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
+      background-color: #f3f3f3;
+      padding: 20px;
     }
-    .login-box {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.1);
-      width: 350px;
-      text-align: center;
+    form {
+      background-color: #fff;
+      padding: 30px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 10px;
     }
-    h2 {
-      color: #0066cc;
-      margin-bottom: 1rem;
-    }
-    input {
+    input, button {
+      display: block;
       width: 100%;
-      padding: 0.7rem;
-      margin-bottom: 1rem;
-      border-radius: 8px;
-      border: 1px solid #ccc;
+      padding: 12px;
+      margin-bottom: 15px;
     }
     button {
-      width: 100%;
-      padding: 0.7rem;
-      background-color: #3399ff;
-      color: white;
+      background-color: #1e88e5;
+      color: #fff;
       border: none;
-      border-radius: 8px;
-      font-weight: bold;
       cursor: pointer;
-    }
-    button:hover {
-      background-color: #0077cc;
-    }
-    .error {
-      color: red;
-      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <div class="login-box">
-    <h2>Connexion Membre</h2>
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Adresse e-mail" required />
-      <input type="password" id="password" placeholder="Mot de passe (simulé)" required />
-      <button type="submit">Se connecter</button>
-      <p class="error" id="errorMsg" style="display: none;">Identifiants incorrects</p>
-    </form>
-  </div>
+
+  <form id="loginForm">
+    <h2>Connexion</h2>
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="password" name="password" placeholder="Mot de passe" required />
+    <button type="submit">Se connecter</button>
+    <p id="message" style="color:red;"></p>
+  </form>
 
   <script>
-    const form = document.getElementById('loginForm');
-    const errorMsg = document.getElementById('errorMsg');
+    // Stocker la page précédente si elle existe
+    if (document.referrer && !localStorage.getItem("lastPage")) {
+      localStorage.setItem("lastPage", document.referrer);
+    }
 
-    // 🔐 Données simulées – à remplacer plus tard par une vraie base de données
-    const fakeUsers = [
-      { email: "test@exemple.com", password: "1234" },
-      { email: "d2b1@rotatif.com", password: "rotatif10" }
-    ];
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbwsyawODzTpdmYRrLoln2OWtnCiti-ESqahzOiWTN1ZclXumdKmARmYMvc7tzNum5gAmA/exec';
 
-    form.addEventListener('submit', function(e) {
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value.trim();
 
-      const match = fakeUsers.find(u => u.email === email && u.password === password);
+      const formData = new FormData(this);
+      const email = formData.get("email");
+      const password = formData.get("password");
 
-      if (match) {
-        window.location.href = "dashboard.html"; // redirige vers le tableau de bord
-      } else {
-        errorMsg.style.display = "block";
-      }
+      fetch(scriptURL)
+        .then(res => res.json())
+        .then(data => {
+          const user = data.find(u => u.email === email && u.password === password);
+          if (user) {
+            // Redirection vers la page précédente
+            const lastPage = localStorage.getItem("lastPage") || "index.html";
+            localStorage.removeItem("lastPage");
+            window.location.href = lastPage;
+          } else {
+            document.getElementById("message").textContent = "Identifiants incorrects.";
+          }
+        })
+        .catch(err => {
+          console.error("Erreur : ", err);
+          document.getElementById("message").textContent = "Erreur lors de la connexion.";
+        });
     });
   </script>
+
 </body>
 </html>

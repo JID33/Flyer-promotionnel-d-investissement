@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
     <meta charset="UTF-8" />
@@ -77,6 +77,10 @@
             font-size: 0.9em;
             color: #888;
         }
+
+        a.button-link {
+            text-decoration: none;
+        }
     </style>
 </head>
 <body>
@@ -100,7 +104,9 @@
 
             <div class="button-group">
                 <button type="submit">S’inscrire</button>
-                <a href="login.html">
+
+                <!-- Connexion avec retour automatique -->
+                <a href="login.html" onclick="localStorage.setItem('lastPage', window.location.href)" class="button-link">
                     <button type="button">Se connecter</button>
                 </a>
             </div>

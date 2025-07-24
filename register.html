@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inscription – Système Rotatif D2B1</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e6f0ff;
+      padding: 2rem;
+    }
+    form {
+      background: #ffffff;
+      max-width: 400px;
+      margin: auto;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+    }
+    input, button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background-color: #3399ff;
+      color: white;
+      font-weight: bold;
+      border: none;
+    }
+    .success {
+      color: green;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <form id="registrationForm">
+    <h2>Inscription Membre</h2>
+    <input type="text" name="nom" placeholder="Nom complet" required>
+    <input type="email" name="email" placeholder="Adresse email" required>
+    <button type="submit">S'inscrire</button>
+    <p class="success" id="msgSuccess" style="display:none;">Inscription réussie !</p>
+  </form>
+
+  <script>
+    const form = document.getElementById('registrationForm');
+    const msg = document.getElementById('msgSuccess');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const data = new FormData(form);
+      const url = 'https://script.google.com/macros/s/TON_URL_SCRIPT/exec'; // ← À remplacer
+
+      fetch(url, {
+        method: 'POST',
+        body: data
+      })
+      .then(response => response.text())
+      .then(result => {
+        msg.style.display = 'block';
+        form.reset();
+      })
+      .catch(error => {
+        alert("Erreur lors de l'inscription !");
+        console.error(error);
+      });
+    });
+  </script>
+
+</body>
+</html>

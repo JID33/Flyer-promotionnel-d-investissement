@@ -41,6 +41,7 @@
       font-size: 1.2rem;
       color: green;
       animation: fadeIn 1s ease-in-out forwards;
+      margin-top: 10px;
     }
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(-10px); }
@@ -55,35 +56,35 @@
     <input type="text" id="username" placeholder="Nom d'utilisateur" required />
     <input type="password" id="password" placeholder="Mot de passe" required />
     <button type="submit">Se connecter</button>
-    <p class="welcome" id="welcomeMsg">Bienvenue sur le système rotatif D2B1 !</p>
+    <p class="welcome" id="welcomeMsg">✅ Bienvenue ! Redirection en cours...</p>
   </form>
 
   <script>
     const form = document.getElementById('loginForm');
     const welcomeMsg = document.getElementById('welcomeMsg');
 
-    // Simuler des identifiants (à remplacer plus tard par Firebase ou base de données)
+    // Exemple : identifiants fixes
     const USERNAME = "admin";
-    const PASSWORD = "1234";  // change-le plus tard
+    const PASSWORD = "1234"; // change-le plus tard !
 
-    // Sauvegarder l'URL précédente (si pas déjà fait)
-    if (!sessionStorage.getItem('lastPage')) {
-      sessionStorage.setItem('lastPage', document.referrer || "index.html");
-    }
+    // Sauvegarde automatique de la page précédente
+    const lastPage = localStorage.getItem('lastPage') || "index.html";
 
     form.addEventListener('submit', function(e) {
       e.preventDefault();
-      const user = document.getElementById('username').value;
-      const pass = document.getElementById('password').value;
+      const user = document.getElementById('username').value.trim();
+      const pass = document.getElementById('password').value.trim();
 
       if (user === USERNAME && pass === PASSWORD) {
         welcomeMsg.style.display = 'block';
 
-        // Attendre un peu pour l'animation puis rediriger
+        // Désactiver le formulaire (empêcher double clic)
+        form.querySelector("button").disabled = true;
+
+        // Redirection après 2 secondes
         setTimeout(() => {
-          const lastPage = sessionStorage.getItem('lastPage') || "index.html";
           window.location.href = lastPage;
-        }, 2000); // 2 secondes pour l'effet "bienvenue"
+        }, 2000);
       } else {
         alert("Identifiants incorrects !");
       }

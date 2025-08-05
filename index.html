@@ -186,6 +186,9 @@
                 max-width: 100%;
                 height: 250px; /* Smaller height for mobile */
             }
+            .video-container {
+                height: 200px; /* Adjust video height for smaller screens */
+            }
         }
 
         @media (min-width: 768px) { /* For medium screens and up */
@@ -218,108 +221,49 @@
             }
         }
 
-        /* Styles for Globe Visual */
+        /* Styles for Globe Visual (now for animated background) */
         .globe-visual {
-            width: 100%; /* Take full width of its container */
-            height: 300px; /* Fixed height for the globe section */
             position: relative;
-            overflow: hidden; /* Hide overflow from background image scrolling */
-            background-size: 200% 100%; /* Allow horizontal scrolling of background */
-            background-position: center; /* Center the background image */
-            background-repeat: no-repeat;
-            animation: scrollMap 25s linear infinite; /* Only horizontal scroll animation */
-            margin-bottom: 30px; /* Space below the globe */
-            border-radius: 12px; /* Slightly rounded corners for the rectangular globe area */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for the globe area */
-            outline: 5px solid rgba(96, 165, 250, 0.5); /* Pale blue outline */
-            outline-offset: -5px; /* Inset the outline */
-            /* Default placeholder background */
-            background-image: url('https://placehold.co/900x300/cccccc/000000?text=Globe+Image');
+            width: 100%;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (height / width = 9 / 16 = 0.5625) */
+            height: 0;
+            overflow: hidden;
+            margin: 30px auto; /* Center and add vertical space */
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background-color: #000; /* Black background for video area */
+            /* Removed background-image and animation for globeVisual, as it now contains an iframe */
         }
 
-        /* Remove rotateGlobe animation as it's not needed for a rectangular globe */
-        @keyframes scrollMap {
-            from { background-position: 0% 0%; }
-            to { background-position: 100% 0%; } /* Scroll map horizontally */
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            position: fixed;
+        .globe-visual iframe { /* Apply iframe styling directly to globe-visual's iframe */
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0s, opacity 0.3s ease;
+            border: 0;
         }
 
-        .modal-overlay.visible {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background-color: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            text-align: center;
+        /* Video container for responsiveness */
+        .video-container {
             position: relative;
-            transform: translateY(-20px);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.visible .modal-content {
-            transform: translateY(0);
-        }
-
-        .modal-content h4 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: #3b82f6;
-            margin-bottom: 15px;
-        }
-
-        .modal-content p {
-            font-size: 1.1rem;
-            color: #4a6572;
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        .modal-close-button {
-            background-color: #ef4444; /* Red */
-            color: white;
-            padding: 10px 20px;
-            border-radius: 10px;
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            transition: background-color 0.2s ease;
-        }
-
-        .modal-close-button:hover {
-            background-color: #dc2626; /* Darker red */
-        }
-
-        /* Styles for the main images in the content section */
-        .main-image-section {
             width: 100%;
-            max-width: 700px; /* Made wider */
-            height: 350px; /* Fixed height for consistency */
-            object-fit: cover; /* Ensure image covers the area without distortion */
-            margin: 20px auto; /* Center the image and add vertical space */
+            padding-bottom: 56.25%; /* 16:9 aspect ratio (height / width = 9 / 16 = 0.5625) */
+            height: 0;
+            overflow: hidden;
+            margin: 30px auto; /* Center and add vertical space */
             border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            background-color: #000; /* Black background for video area */
+        }
+
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
         }
     </style>
 </head>
@@ -339,34 +283,41 @@
         </div>
 
         <div class="flyer-content">
-            <!-- Globe Visual -->
-            <div id="globeVisual" class="globe-visual"></div>
+            <!-- Image added above "Discover Our Program in Video!" -->
+            <img id="programImageTop" class="main-image-section" src="https://i.postimg.cc/pX3JKSff/DREAM2B1.png" alt="Image du Programme DREAM2BUILD1">
 
+            <!-- Discover Our Program Video Section (now using globeVisual div) -->
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center" data-i18n="discoverVideoTitle">Discover Our Program in Video!</h2>
+            <div id="globeVisual" class="globe-visual">
+                <iframe src="https://player.vimeo.com/video/1107482373?h=b1b3b1b3b1&title=0&byline=0&portrait=0"
+                        width="640" height="360" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            
             <h2 data-i18n="flyerContentTitle">Discover the Benefits of DREAM2BUILD1!</h2>
             
-            <!-- Image for Training Room Projection (now the main image here) -->
-            <img id="trainingRoomProjectionImage" class="main-image-section" src="https://placehold.co/700x350/cccccc/000000?text=Training+Room+Projection" alt="Image of Training Room with Projection">
+            <!-- Image for Training Room Projection (still here) -->
+            <img id="trainingRoomProjectionImage" class="main-image-section" src="https://i.postimg.cc/MHTSwHX8/D2B1.png" alt="Image of Training Room with Projection">
 
             <div class="image-gallery">
                 <!-- Image for Psychological Test (top of the triangle) -->
                 <div class="image-item">
                     <h3 data-i18n="psychologicalTestTitle">PSYCHOLOGICAL TEST</h3>
                     <a href="https://jid33.github.io/last-one-d2b1/" target="_blank"> <!-- Updated link -->
-                        <img id="psychologicalTestImage" src="https://placehold.co/280x200/cccccc/000000?text=Psychological+Test" alt="Image of Psychological Test">
+                        <img id="psychologicalTestImage" src="https://i.postimg.cc/43JxYJSm/Uses-of-Psychological-Testing.png" alt="Image of Psychological Test">
                     </a>
                 </div>
                 <!-- Image for Your Financial Future (Piggy Bank) -->
                 <div class="image-item">
                     <h3 data-i18n="piggyBankTitle">YOUR FINANCIAL FUTURE</h3>
                     <a href="#" onclick="showModal(translations[currentLanguage].piggyBankText); return false;">
-                        <img id="image3" src="https://placehold.co/280x200/cccccc/000000?text=Piggy+Bank" alt="Image of Your Financial Future (Piggy Bank)">
+                        <img id="image3" src="https://i.postimg.cc/qvWWFQ80/images-1.jpg" alt="Image of Your Financial Future (Piggy Bank)">
                     </a>
                 </div>
                 <!-- Image for Laptop with Internet Connection and Form Link -->
                 <div class="image-item">
                     <h3 data-i18n="formTitle">FILL OUT THE REGISTRATION FORM</h3>
                     <a href="https://jid33.github.io/FORMULAIRE-D-INSCRPTION-DREAM2BUILD1-SUCCESS-2025/" target="_blank">
-                        <img id="image1" src="https://placehold.co/280x200/cccccc/000000?text=Laptop" alt="Image of Laptop with Internet Connection">
+                        <img id="image1" src="https://i.postimg.cc/zvnfLV8H/images.jpg" alt="Image of Laptop with Internet Connection">
                     </a>
                 </div>
             </div>
@@ -394,6 +345,8 @@
                 flyerTitleDoc: "Investment Promotion Flyer",
                 flyerHeaderTitle: "WIN BIG WITH US!",
                 flyerHeaderSubtitle: "Participate in our exclusive draws and try to win incredible prizes! Every investment brings you closer to victory. Don't miss your chance!",
+                // discoverGlobeTitle: "Animated Globe", // Removed as globeVisual now contains iframe
+                discoverVideoTitle: "Discover Our Program in Video!", // Re-added for the video section
                 flyerContentTitle: "Discover the Benefits of DREAM2BUILD1!",
                 flyerContentText: "With DREAM2BUILD1, transform your investments into exciting earning opportunities! Our platform combines an intuitive investment calculator to help you plan your finances, and a random drawing system to add a touch of suspense and fun. Whether you are an experienced investor or just starting out, DREAM2BUILD1 is designed to maximize your earning potential and make the experience enjoyable. Join our community today and start building your financial future while having fun!", // This text is now used in the modal
                 flyerCtaButton: "Join the Draw Now!",
@@ -412,6 +365,8 @@
                 flyerTitleDoc: "Flyer Promotionnel d'Investissement",
                 flyerHeaderTitle: "GAGNEZ GROS AVEC NOUS !",
                 flyerHeaderSubtitle: "Participez à nos tirages exclusifs et tentez de remporter des prix incroyables ! Chaque investissement vous rapproche de la victoire. Ne manquez pas votre chance !",
+                // discoverGlobeTitle: "Globe Animé", // Removed as globeVisual now contains iframe
+                discoverVideoTitle: "Découvrez Notre Programme en Vidéo !", // Re-added for the video section
                 flyerContentTitle: "Découvrez les Avantages de DREAM2BUILD1 !",
                 flyerContentText: "Avec DREAM2BUILD1, transformez vos investissements en opportunités de gains passionnantes ! Notre plateforme combine un calculateur d'investissement intuitif pour vous aider à planifier vos finances, et un système de tirage aléatoire pour ajouter une touche de suspense et de plaisir. Que vous soyez un investisseur aguerri ou que vous débutiez, DREAM2BUILD1 est conçu pour maximiser votre potentiel de gain et rendre l'expérience ludique. Rejoignez notre communauté dès aujourd'hui et commencez à construire votre avenir financier tout en vous amusant !", // This text is now used in the modal
                 flyerCtaButton: "Rejoignez le Tirage Maintenant !",
@@ -454,6 +409,8 @@
             document.getElementById('image3').alt = translations[lang].imageAltFuture;
             document.getElementById('psychologicalTestImage').alt = translations[lang].psychologicalTestTitle;
             document.getElementById('trainingRoomProjectionImage').alt = translations[lang].imageAltWin;
+            // Update alt text for the new program image
+            document.getElementById('programImageTop').alt = translations[lang].discoverVideoTitle; // Reusing this translation key for alt text
         }
 
         /**

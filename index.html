@@ -1,118 +1,484 @@
-<!DOCTYPE html> 
-<html lang="fr">
+<!DOCTYPE html>
+<html lang="en"> <!-- Default language set to English -->
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Accueil – Projet R2C1</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="flyerTitleDoc">Investment Promotion Flyer</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f3f3f3;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light background */
+            display: flex;
+            flex-direction: column; /* Allow stacking sections vertically */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
             padding: 20px;
+            box-sizing: border-box;
+            background-image: linear-gradient(to bottom right, #e9ecef, #dee2e6); /* Subtle gradient */
+        }
+
+        .flyer-container {
+            background-color: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2); /* Stronger shadow for a premium feel */
+            width: 100%;
+            max-width: 900px; /* Max width for the flyer */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid #e2e8f0;
+            position: relative; /* Needed for absolute positioning of language selector */
+            margin-bottom: 30px; /* Space between flyer and other sections if any */
+        }
+
+        .flyer-header {
+            background-image: linear-gradient(to right, #6366f1, #8b5cf6); /* Indigo to Purple gradient */
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: pulse-gradient 5s infinite alternate ease-in-out;
+            background-size: 200% 200%;
+        }
+
+        .flyer-header h1 {
+            font-size: 3.5rem; /* Very large title */
+            font-weight: 900;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5); /* More pronounced shadow */
+            letter-spacing: 1.5px;
+        }
+
+        .flyer-header p {
+            font-size: 1.5rem;
+            font-weight: 600;
+            opacity: 0.95;
+            text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+        }
+
+        .flyer-content {
+            padding: 30px;
+            text-align: center;
+        }
+
+        .flyer-content h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #3b82f6; /* Blue */
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .flyer-content p {
+            font-size: 1.15rem;
+            color: #4a6572;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        .image-gallery {
+            display: grid; /* Changed to grid */
+            grid-template-columns: 1fr; /* Default to 1 column on small screens */
+            gap: 20px;
+            margin-top: 30px; /* Space above the gallery */
+            justify-items: center; /* Center items within their grid cells */
+        }
+
+        .image-gallery .image-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-        }
-
-        header {
             text-align: center;
-            margin-bottom: 30px;
         }
 
-        h1 {
-            color: #2c3e50;
+        .image-gallery h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
         }
 
-        p {
-            color: #555;
-            max-width: 600px;
+        .image-gallery img {
+            width: 100%; /* Take full width of grid cell */
+            max-width: 280px; /* Max width for each image */
+            height: 200px; /* Fixed height */
+            object-fit: cover; /* Ensure image covers the area without distortion */
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .form-container {
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 400px;
+        .image-gallery img:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
         }
 
-        label {
-            display: block;
-            margin-top: 15px;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        input {
-            width: 100%;
-            padding: 10px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: space-between;
+        .flyer-cta-button {
+            display: inline-block;
+            background-image: linear-gradient(to bottom right, #22c55e, #16a34a); /* Green gradient */
+            color: white;
+            padding: 18px 45px;
+            border-radius: 15px;
+            font-size: 1.3rem;
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             margin-top: 20px;
         }
 
-        button {
-            padding: 10px 20px;
-            background-color: #3498db;
-            border: none;
-            border-radius: 5px;
+        .flyer-cta-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .flyer-footer {
+            background-color: #34495e; /* Dark blue-gray */
             color: white;
-            font-weight: bold;
+            padding: 25px 30px;
+            text-align: center;
+            font-size: 0.95rem;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+        }
+
+        @keyframes pulse-gradient {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .flyer-header h1 {
+                font-size: 2.5rem;
+            }
+            .flyer-header p {
+                font-size: 1.2rem;
+            }
+            .flyer-content h2 {
+                font-size: 2rem;
+            }
+            .flyer-content p {
+                font-size: 1rem;
+            }
+            .image-gallery {
+                grid-template-columns: 1fr; /* Stack on small screens */
+            }
+            .image-gallery img {
+                height: 180px;
+            }
+            .flyer-cta-button {
+                padding: 14px 35px;
+                font-size: 1.1rem;
+            }
+            .globe-visual {
+                height: 200px; /* Adjust height for smaller screens */
+            }
+            .main-image-section { /* Adjusted for smaller screens */
+                max-width: 100%;
+                height: 250px; /* Smaller height for mobile */
+            }
+        }
+
+        @media (min-width: 768px) { /* For medium screens and up */
+            .image-gallery {
+                grid-template-columns: 1fr 1fr; /* Two columns */
+            }
+            .image-gallery .image-item:first-child { /* Psychological Test Image */
+                grid-column: span 2; /* Spans both columns */
+                max-width: 580px; /* Max width to keep it centered */
+                justify-self: center; /* Center it */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .flyer-header h1 {
+                font-size: 2rem;
+            }
+            .flyer-header p {
+                font-size: 1rem;
+            }
+            .flyer-content h2 {
+                font-size: 1.8rem;
+            }
+            .flyer-content p {
+                font-size: 0.95rem;
+            }
+            .flyer-cta-button {
+                padding: 12px 30px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Styles for Globe Visual */
+        .globe-visual {
+            width: 100%; /* Take full width of its container */
+            height: 300px; /* Fixed height for the globe section */
+            position: relative;
+            overflow: hidden; /* Hide overflow from background image scrolling */
+            background-size: 200% 100%; /* Allow horizontal scrolling of background */
+            background-position: center; /* Center the background image */
+            background-repeat: no-repeat;
+            animation: scrollMap 25s linear infinite; /* Only horizontal scroll animation */
+            margin-bottom: 30px; /* Space below the globe */
+            border-radius: 12px; /* Slightly rounded corners for the rectangular globe area */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); /* Soft shadow for the globe area */
+            outline: 5px solid rgba(96, 165, 250, 0.5); /* Pale blue outline */
+            outline-offset: -5px; /* Inset the outline */
+            /* Default placeholder background */
+            background-image: url('https://placehold.co/900x300/cccccc/000000?text=Globe+Image');
+        }
+
+        /* Remove rotateGlobe animation as it's not needed for a rectangular globe */
+        @keyframes scrollMap {
+            from { background-position: 0% 0%; }
+            to { background-position: 100% 0%; } /* Scroll map horizontally */
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            visibility: hidden;
+            opacity: 0;
+            transition: visibility 0s, opacity 0.3s ease;
+        }
+
+        .modal-overlay.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            text-align: center;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h4 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #3b82f6;
+            margin-bottom: 15px;
+        }
+
+        .modal-content p {
+            font-size: 1.1rem;
+            color: #4a6572;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-close-button {
+            background-color: #ef4444; /* Red */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
             cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
         }
 
-        button:hover {
-            background-color: #2980b9;
+        .modal-close-button:hover {
+            background-color: #dc2626; /* Darker red */
         }
 
-        .small-text {
-            margin-top: 15px;
-            font-size: 0.9em;
-            color: #888;
-        }
-
-        a.button-link {
-            text-decoration: none;
+        /* Styles for the main images in the content section */
+        .main-image-section {
+            width: 100%;
+            max-width: 700px; /* Made wider */
+            height: 350px; /* Fixed height for consistency */
+            object-fit: cover; /* Ensure image covers the area without distortion */
+            margin: 20px auto; /* Center the image and add vertical space */
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>COOPÉRATIVE R2C1</h1>
-        <p>Participez à un système rotatif éthique et solidaire. Contribuez, tournez, recevez, et construisons ensemble nos mini-business à tour de rôle !</p>
-    </header>
+    <div class="flyer-container">
+        <!-- Language Selector -->
+        <div class="absolute top-4 right-4 z-10">
+            <select id="languageSelector" class="p-2 rounded-md border border-gray-300 bg-white shadow-sm">
+                <option value="en" selected>English</option>
+                <option value="fr">Français</option>
+            </select>
+        </div>
 
-    <div class="form-container">
-        <form id="inscription-form" method="POST"
-              action="https://script.google.com/macros/s/AKfycbxnQyfsUHhCPBk47rbNQrieOPA6xRXFTcTnFYAE4FYt70pKyOXhw_t84J4I0EEjxdoLpg/exec">
+        <div class="flyer-header">
+            <h1 data-i18n="flyerHeaderTitle">WIN BIG WITH US!</h1>
+            <p data-i18n="flyerHeaderSubtitle">Participate in our exclusive draws and try to win incredible prizes! Every investment brings you closer to victory. Don't miss your chance!</p>
+        </div>
 
-            <label for="nom">Nom :</label>
-            <input type="text" name="Nom" id="nom" required>
+        <div class="flyer-content">
+            <!-- Globe Visual -->
+            <div id="globeVisual" class="globe-visual"></div>
 
-            <label for="email">Email :</label>
-            <input type="email" name="Email" id="email" required>
+            <h2 data-i18n="flyerContentTitle">Discover the Benefits of DREAM2BUILD1!</h2>
+            
+            <!-- Image for Training Room Projection (now the main image here) -->
+            <img id="trainingRoomProjectionImage" class="main-image-section" src="https://placehold.co/700x350/cccccc/000000?text=Training+Room+Projection" alt="Image of Training Room with Projection">
 
-            <label for="telephone">Téléphone :</label>
-            <input type="tel" name="Téléphone" id="telephone" required>
-
-            <div class="button-group">
-                <button type="submit">S’inscrire</button>
-
-                <!-- Connexion avec retour automatique -->
-                <a href="login.html" onclick="localStorage.setItem('lastPage', window.location.href)" class="button-link">
-                    <button type="button">Se connecter</button>
-                </a>
+            <div class="image-gallery">
+                <!-- Image for Psychological Test (top of the triangle) -->
+                <div class="image-item">
+                    <h3 data-i18n="psychologicalTestTitle">PSYCHOLOGICAL TEST</h3>
+                    <a href="https://jid33.github.io/last-one-d2b1/" target="_blank"> <!-- Updated link -->
+                        <img id="psychologicalTestImage" src="https://placehold.co/280x200/cccccc/000000?text=Psychological+Test" alt="Image of Psychological Test">
+                    </a>
+                </div>
+                <!-- Image for Your Financial Future (Piggy Bank) -->
+                <div class="image-item">
+                    <h3 data-i18n="piggyBankTitle">YOUR FINANCIAL FUTURE</h3>
+                    <a href="#" onclick="showModal(translations[currentLanguage].piggyBankText); return false;">
+                        <img id="image3" src="https://placehold.co/280x200/cccccc/000000?text=Piggy+Bank" alt="Image of Your Financial Future (Piggy Bank)">
+                    </a>
+                </div>
+                <!-- Image for Laptop with Internet Connection and Form Link -->
+                <div class="image-item">
+                    <h3 data-i18n="formTitle">FILL OUT THE REGISTRATION FORM</h3>
+                    <a href="https://jid33.github.io/FORMULAIRE-D-INSCRPTION-DREAM2BUILD1-SUCCESS-2025/" target="_blank">
+                        <img id="image1" src="https://placehold.co/280x200/cccccc/000000?text=Laptop" alt="Image of Laptop with Internet Connection">
+                    </a>
+                </div>
             </div>
-        </form>
 
-        <p class="small-text">* Vos données sont protégées. Aucune revente, aucun spam.</p>
+            <a href="https://jid33.github.io/DREAM2BUILD1-SUCCESS-2025/" target="_blank" class="flyer-cta-button" data-i18n="flyerCtaButton">Join the Draw Now!</a>
+        </div>
+
+        <div class="flyer-footer">
+            <p data-i18n="flyerFooterText">&copy; 2025 DREAM2BUILD1. All rights reserved.</p>
+        </div>
     </div>
+
+    <!-- Custom Modal Structure -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <h4 data-i18n="modalTitle">Information</h4>
+            <p id="modalText"></p>
+            <button class="modal-close-button" onclick="hideModal()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const translations = {
+            en: {
+                flyerTitleDoc: "Investment Promotion Flyer",
+                flyerHeaderTitle: "WIN BIG WITH US!",
+                flyerHeaderSubtitle: "Participate in our exclusive draws and try to win incredible prizes! Every investment brings you closer to victory. Don't miss your chance!",
+                flyerContentTitle: "Discover the Benefits of DREAM2BUILD1!",
+                flyerContentText: "With DREAM2BUILD1, transform your investments into exciting earning opportunities! Our platform combines an intuitive investment calculator to help you plan your finances, and a random drawing system to add a touch of suspense and fun. Whether you are an experienced investor or just starting out, DREAM2BUILD1 is designed to maximize your earning potential and make the experience enjoyable. Join our community today and start building your financial future while having fun!", // This text is now used in the modal
+                flyerCtaButton: "Join the Draw Now!",
+                flyerFooterText: "&copy; 2025 DREAM2BUILD1. All rights reserved.",
+                imageAltInvest: "Image of Laptop with Internet Connection",
+                imageAltWin: "Image of Well-Equipped Training Space", // This alt text is now for mainBenefitsImage
+                imageAltFuture: "Image of Your Financial Future",
+                loadingText: "Loading...",
+                formTitle: "FILL OUT THE REGISTRATION FORM",
+                piggyBankTitle: "YOUR FINANCIAL FUTURE",
+                piggyBankText: "With DREAM2BUILD1, transform your investments into exciting earning opportunities! Our platform combines an intuitive investment calculator to help you plan your finances, and a random drawing system to add a touch of suspense and fun. Whether you are an experienced investor or just starting out, DREAM2BUILD1 is designed to maximize your earning potential and make the experience enjoyable. Join our community today and start building your financial future while having fun!",
+                modalTitle: "Information",
+                psychologicalTestTitle: "PSYCHOLOGICAL TEST"
+            },
+            fr: {
+                flyerTitleDoc: "Flyer Promotionnel d'Investissement",
+                flyerHeaderTitle: "GAGNEZ GROS AVEC NOUS !",
+                flyerHeaderSubtitle: "Participez à nos tirages exclusifs et tentez de remporter des prix incroyables ! Chaque investissement vous rapproche de la victoire. Ne manquez pas votre chance !",
+                flyerContentTitle: "Découvrez les Avantages de DREAM2BUILD1 !",
+                flyerContentText: "Avec DREAM2BUILD1, transformez vos investissements en opportunités de gains passionnantes ! Notre plateforme combine un calculateur d'investissement intuitif pour vous aider à planifier vos finances, et un système de tirage aléatoire pour ajouter une touche de suspense et de plaisir. Que vous soyez un investisseur aguerri ou que vous débutiez, DREAM2BUILD1 est conçu pour maximiser votre potentiel de gain et rendre l'expérience ludique. Rejoignez notre communauté dès aujourd'hui et commencez à construire votre avenir financier tout en vous amusant !", // This text is now used in the modal
+                flyerCtaButton: "Rejoignez le Tirage Maintenant !",
+                flyerFooterText: "&copy; 2025 DREAM2BUILD1. Tous droits réservés.",
+                imageAltInvest: "Image d'ordinateur portable avec connexion Internet",
+                imageAltWin: "Image d'espace de formation bien équipé", // This alt text is now for mainBenefitsImage
+                imageAltFuture: "Image de votre avenir financier",
+                loadingText: "Chargement...",
+                formTitle: "REMPLIR LE FORMULAIRE D'INSCRIPTION",
+                piggyBankTitle: "VOTRE AVENIR FINANCIER",
+                piggyBankText: "Avec DREAM2BUILD1, transformez vos investissements en opportunités de gains passionnantes ! Notre plateforme combine un calculateur d'investissement intuitif pour vous aider à planifier vos finances, et un système de tirage aléatoire pour ajouter une touche de suspense et de plaisir. Que vous soyez un investisseur aguerri ou que vous débutiez, DREAM2BUILD1 est conçu pour maximiser votre potentiel de gain et rendre l'expérience ludique. Rejoignez notre communauté dès aujourd'hui et commencez à construire votre avenir financier tout en vous amusant !",
+                modalTitle: "Information",
+                psychologicalTestTitle: "TEST PSYCHOLOGIQUE"
+            }
+        };
+
+        let currentLanguage = 'en'; // Default language
+
+        /**
+         * Sets the language of the application.
+         * @param {string} lang - The language code ('en' or 'fr').
+         */
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            document.documentElement.lang = lang; // Set HTML lang attribute
+
+            // Update title
+            document.querySelector('title').textContent = translations[lang].flyerTitleDoc;
+
+            // Update elements with data-i18n attribute
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    element.innerHTML = translations[lang][key]; // Use innerHTML for copyright symbol
+                }
+            });
+
+            // Update image alt texts
+            document.getElementById('image1').alt = translations[lang].imageAltInvest;
+            document.getElementById('image3').alt = translations[lang].imageAltFuture;
+            document.getElementById('psychologicalTestImage').alt = translations[lang].psychologicalTestTitle;
+            document.getElementById('trainingRoomProjectionImage').alt = translations[lang].imageAltWin;
+        }
+
+        /**
+         * Displays the custom modal with the given text.
+         * @param {string} text - The text to display in the modal.
+         */
+        function showModal(text) {
+            document.getElementById('modalText').textContent = text;
+            document.getElementById('customModal').classList.add('visible');
+        }
+
+        /**
+         * Hides the custom modal.
+         */
+        function hideModal() {
+            document.getElementById('customModal').classList.remove('visible');
+        }
+
+        // Call the function to set initial language when the window loads
+        window.onload = () => {
+            setLanguage('en'); // Set initial language to English
+            document.getElementById('languageSelector').addEventListener('change', (event) => {
+                setLanguage(event.target.value);
+            });
+        };
+    </script>
 </body>
 </html>
